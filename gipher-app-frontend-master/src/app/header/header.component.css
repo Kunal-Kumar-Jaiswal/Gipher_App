@@ -1,0 +1,15 @@
+a {
+  color: white;
+}
+.profile-button {
+  background-color: #343a3f; 
+  border: none !important;
+}
+.profile-button:hover {
+  background-color: #31302d;
+}
+
+.logo {
+  width: 38px;
+  height: 38px;
+}

@@ -1,0 +1,67 @@
+version: "3.3"
+services:
+  mysqlservice:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    container_name: mysql-container
+    networks:
+      - gipher-net
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USERNAME: gipher-root
+      MYSQL_PASSWORD: kunal@123
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+
+  mongodbservice:
+    image: mongo:latest
+    container_name: mongo-container
+    networks:
+      - gipher-net
+    ports:
+      - "27017:27017"
+
+  eurekaServer:
+    image: eureka-service
+    build: gipher-app-eureka-service/
+    restart: always
+    networks:
+      - gipher-net
+    ports:
+      - "8761:8761"
+
+  gipherauthenticationservice:
+    container_name: gipher-authentication-service
+    build: gipher-app-auth-service/
+    networks:
+      - gipher-net
+    ports:
+      - "8084:8084"
+    depends_on:
+      - mysqlservice
+    restart: always
+
+  gipherwishlistservice:
+    container_name: gipher-wishlist-service
+    build: gipher-app-wishlist-service/
+    networks:
+      - gipher-net
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mongodbservice
+    restart: always
+
+  apigatewayservice:
+    image: api-gateway-service
+    build: gipher-app-apigateway-service/
+    restart: always
+    networks:
+      - gipher-net
+    ports:
+      - "8888:8888"
+
+networks:
+  gipher-net:
+    driver: bridge
